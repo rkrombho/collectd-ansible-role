@@ -1,0 +1,6 @@
+---
+# This file contains tasks for the ColledtD role
+
+- include: collectd.yml
+  when: collectd_enabled
+  tags: [collectd]

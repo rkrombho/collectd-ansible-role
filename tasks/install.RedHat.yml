@@ -1,0 +1,33 @@
+---
+# This file contains tasks for the ColledtD role
+
+- name: collectd | install build essentials
+  yum: name={{ item }}
+    state=present
+  with_items:
+    - make
+    - gcc
+    - perl-devel
+
+- command: test -d /opt/collectd
+  register: collectd_installed
+  ignore_errors: yes
+
+- name: collectd | download sources
+  get_url: url=http://collectd.org/files/collectd-{{ collectd_version }}.tar.gz dest=/usr/src
+  register: collectd_source
+
+- name: collectd | upack sources
+  unarchive: src=/usr/src/collectd-{{ collectd_version }}.tar.gz
+    dest=/tmp
+  when: collectd_source.changed 
+
+- name: collectd | configure 
+  command: chdir=/tmp/collectd-{{ collectd_version }}
+    ./configure 
+  when: collectd_source.changed 
+
+- name: collectd | make 
+  command: chdir=/tmp/collectd-{{ collectd_version }}
+    make all install
+  when: collectd_source.changed

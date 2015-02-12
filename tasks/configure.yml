@@ -1,0 +1,21 @@
+---
+
+- name: collectd | check required variable
+  fail: msg="role variable 'graphite_host' is required"
+  when:  graphite_host is undefined 
+
+- name: collectd | configure collectd.conf
+  template: src=collectd.conf.j2 dest=/opt/collectd/etc/collectd.conf validate='/opt/collectd/sbin/collectd -t -C %s' 
+  notify: collectd restart
+
+- name: collectd | systemd setup
+  copy: src=collectd.service dest=/usr/lib/systemd/system/collectd.service
+  register: systemd_config
+
+- name: collectd | reload systemd
+  command: /usr/bin/systemctl --system daemon-reload
+  when: systemd_config.changed
+
+- name: collectd | start and enable service 
+  service: name=collectd state=started enabled=yes
+  

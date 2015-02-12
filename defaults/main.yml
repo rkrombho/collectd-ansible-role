@@ -1,0 +1,32 @@
+---
+
+collectd_enabled: yes 
+collectd_version: 5.4.1 
+collectd_interval: 10
+collectd_readthreads: 7
+collectd_hostname: "{{ inventory_hostname }}"
+collectd_fdqnlookup: false
+collectd_plugins: []            
+collectd_plugins_options: {}
+
+collectd_default_plugins: [cpu, df, interface, load, memory, swap]
+collectd_default_plugins_options:
+  swap:
+    - ReportByDevice false
+  interface:
+    - Interface "lo"
+    - IgnoreSelected true
+collectd_write_graphite: yes
+collectd_write_graphite_options:
+  Host: "{{ graphite_host }}"
+  Port: "2003"
+  Prefix: "collectd."
+  Protocol: "tcp"
+  AlwaysAppendDS: false
+  EscapeCharacter: "_"
+  LogSendErrors: true
+  StoreRates: true
+
+collectd_logpath: 
+collectd_loglevel: info
+     
