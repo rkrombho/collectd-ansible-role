@@ -12,6 +12,7 @@
 - command: test -d /opt/collectd
   register: collectd_installed
   ignore_errors: yes
+  changed_when: "collectd_installed.rc != 0"
 
 - name: collectd | download sources
   get_url: url=http://collectd.org/files/collectd-{{ collectd_version }}.tar.gz dest=/usr/src
